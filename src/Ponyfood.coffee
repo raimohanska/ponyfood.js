@@ -645,17 +645,6 @@ class EventStream extends Observable
     withDescription(this, "sampledBy", sampler, combinator,
       @toProperty().sampledBy(sampler, combinator))
 
-  concat: (right) ->
-    left = this
-    new EventStream describe(left, "concat", right), (sink) ->
-      unsubRight = nop
-      unsubLeft = left.subscribeInternal (e) ->
-        if e.isEnd()
-          unsubRight = right.subscribeInternal sink
-        else
-          sink(e)
-      -> unsubLeft() ; unsubRight()
-
   takeUntil: (stopper) =>
     endMarker = {}
     withDescription(this, "takeUntil", stopper, Ponyfood.groupSimultaneous(this.mapEnd(endMarker), stopper.skipErrors())
@@ -693,6 +682,17 @@ class EventStream extends Observable
   startWith: (seed) ->
     withDescription(this, "startWith", seed,
       Ponyfood.once(seed).concat(this))
+
+  concat: (right) ->
+    left = this
+    new EventStream describe(left, "concat", right), (sink) ->
+      unsubRight = nop
+      unsubLeft = left.subscribeInternal (e) ->
+        if e.isEnd()
+          unsubRight = right.subscribeInternal sink
+        else
+          sink(e)
+      -> unsubLeft() ; unsubRight()
 
   withHandler: (handler) ->
     dispatcher = new Dispatcher(@subscribeInternal, handler)

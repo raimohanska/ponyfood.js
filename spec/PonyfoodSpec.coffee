@@ -887,7 +887,7 @@ describe "EventStream.throttle(delay)", ->
   it "toString", ->
     expect(Ponyfood.never().throttle(1).toString()).to.equal("Ponyfood.never().throttle(1)")
 
-describe.only "EventStream.bufferWithTime (flushIfEmpty = false)", ->
+describe "EventStream.bufferWithTime (flushIfEmpty = false)", ->
   describe "returns events in bursts, passing through errors", ->
     expectStreamEvents(
       -> series(2, [error(), 1, 2, 3, 4, 5, 6, 7]).bufferWithTime(t(7))
