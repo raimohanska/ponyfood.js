@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>Ponyfood.js</id>
+    <title>Ponyfood.js - Functional Reactive Programming library for JavaScript</title>
+    <version>0.7.2</version>
+    <authors>Ponyfood.js Organization</authors>
+    <description>
+        Functional reactive programming lib for JavaScript. Turns your event spaghetti into clean and declarative feng shui ponyfood, by switching from imperative to functional.
+    </description>
+    <projectUrl>http://ponyfoodjs.github.io</projectUrl>
+    <iconUrl>https://github.com/ponyfoodjs/ponyfood.js/raw/master/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://bit.ly/mit-license</licenseUrl>
+    <language>en-US</language>
+    <tags>Ponyfood Ponyfood.js Reactive Functional Observable FRP Event</tags>
+    <dependencies>
+      <dependency id="jQuery" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\dist\Ponyfood.js" target="content\Scripts\Ponyfood.js" />
+    <file src="..\dist\Ponyfood.min.js" target="content\Scripts\Ponyfood.min.js" />
+  </files>
+</package>
