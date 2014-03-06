@@ -887,7 +887,7 @@ describe "EventStream.throttle(delay)", ->
   it "toString", ->
     expect(Ponyfood.never().throttle(1).toString()).to.equal("Ponyfood.never().throttle(1)")
 
-describe "EventStream.bufferWithTime", ->
+describe.only "EventStream.bufferWithTime (flushIfEmpty = false)", ->
   describe "returns events in bursts, passing through errors", ->
     expectStreamEvents(
       -> series(2, [error(), 1, 2, 3, 4, 5, 6, 7]).bufferWithTime(t(7))
@@ -896,6 +896,12 @@ describe "EventStream.bufferWithTime", ->
     th.expectStreamTimings(
       -> th.atGivenTimes([[0, "a"], [3, "b"], [5, "c"]]).bufferWithTime(t(2))
       [[2, ["a"]], [4, ["b"]], [6, ["c"]]]
+      unstable
+    )
+  describe "does not outpu empty array if no events occurred while buffering", ->
+    th.expectStreamTimings(
+      -> th.atGivenTimes([[0, "a"], [3, "b"], [9, "c"]]).bufferWithTime(t(2))
+      [[2, ["a"]], [4, ["b"]], [11, ["c"]]]
       unstable
     )
   describe "works with empty stream", ->
@@ -918,6 +924,14 @@ describe "EventStream.bufferWithTime", ->
       [[1,2,3]])
   it "toString", ->
     expect(Ponyfood.never().bufferWithTime(1).toString()).to.equal("Ponyfood.never().bufferWithTime(1)")
+
+describe "EventStream.bufferWithTime (flushIfEmpty = true)", ->
+  describe "outputs empty array if no events occurred while buffering", ->
+    th.expectStreamTimings(
+      -> th.atGivenTimes([[0, "a"], [3, "b"], [9, "c"]]).bufferWithTime(t(2), true)
+      [[2, ["a"]], [4, ["b"]], [6, []], [8, []], [10, ["c"]]]
+      unstable
+    )
 
 describe "EventStream.bufferWithCount", ->
   describe "returns events in chunks of fixed size, passing through errors", ->

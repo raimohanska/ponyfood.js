@@ -562,8 +562,11 @@ class EventStream extends Observable
   throttle: (delay) ->
     withDescription(this, "throttle", delay, @bufferWithTime(delay).map((values) -> values[values.length - 1]))
 
-  bufferWithTime: (delay) -> 
-    withDescription(this, "bufferWithTime", delay, @bufferWithTimeOrCount(delay, Number.MAX_VALUE))
+  bufferWithTime: (delay, flushIfEmpty) -> 
+    minLength = if flushIfEmpty then 0 else 1
+    schedule = (buffer) ->
+      buffer.schedule()
+    withDescription(this, "bufferWithTime", delay, @buffer(delay, schedule, schedule, minLength))
   bufferWithCount: (count) -> 
     withDescription(this, "bufferWithCount", count, @bufferWithTimeOrCount(undefined, count))
 
@@ -576,14 +579,14 @@ class EventStream extends Observable
     withDescription(this, "bufferWithTimeOrCount", delay, count, @buffer(delay, flushOrSchedule, flushOrSchedule))
 
 
-  buffer: (delay, onInput = (->), onFlush = (->)) ->
+  buffer: (delay, onInput = (->), onFlush = (->), minLength = 1) ->
     buffer = {
       scheduled: false
       end : null
       values : []
       flush: ->
         @scheduled = false
-        if @values.length > 0
+        if @values.length >= minLength
           reply = @push next(@values)
           @values = []
           if @end?
