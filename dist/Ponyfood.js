@@ -11,7 +11,7 @@
     }
   };
 
-  Ponyfood.version = '0.7.7';
+  Ponyfood.version = '0.7.8';
 
   Ponyfood.fromBinder = function(binder, eventTransformer) {
     if (eventTransformer == null) {
@@ -1241,26 +1241,6 @@
       return withDescription(this, "sampledBy", sampler, combinator, this.toProperty().sampledBy(sampler, combinator));
     };
 
-    EventStream.prototype.concat = function(right) {
-      var left;
-      left = this;
-      return new EventStream(describe(left, "concat", right), function(sink) {
-        var unsubLeft, unsubRight;
-        unsubRight = nop;
-        unsubLeft = left.subscribeInternal(function(e) {
-          if (e.isEnd()) {
-            return unsubRight = right.subscribeInternal(sink);
-          } else {
-            return sink(e);
-          }
-        });
-        return function() {
-          unsubLeft();
-          return unsubRight();
-        };
-      });
-    };
-
     EventStream.prototype.takeUntil = function(stopper) {
       var endMarker;
       endMarker = {};
@@ -1314,6 +1294,26 @@
 
     EventStream.prototype.startWith = function(seed) {
       return withDescription(this, "startWith", seed, Ponyfood.once(seed).concat(this));
+    };
+
+    EventStream.prototype.concat = function(right) {
+      var left;
+      left = this;
+      return new EventStream(describe(left, "concat", right), function(sink) {
+        var unsubLeft, unsubRight;
+        unsubRight = nop;
+        unsubLeft = left.subscribeInternal(function(e) {
+          if (e.isEnd()) {
+            return unsubRight = right.subscribeInternal(sink);
+          } else {
+            return sink(e);
+          }
+        });
+        return function() {
+          unsubLeft();
+          return unsubRight();
+        };
+      });
     };
 
     EventStream.prototype.withHandler = function(handler) {
