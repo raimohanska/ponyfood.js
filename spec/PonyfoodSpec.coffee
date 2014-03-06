@@ -1221,6 +1221,15 @@ describe "EventStream.concat", ->
   it "toString", ->
     expect(Ponyfood.once(1).concat(Ponyfood.once(2)).toString()).to.equal("Ponyfood.once(1).concat(Ponyfood.once(2))")
 
+describe "Property.concat", ->
+  describe "provides values from streams in given order and ends when both are exhausted", ->
+    expectStreamEvents(
+      ->
+        left = series(2, [1, error(), 2, 3]).toProperty()
+        right = series(1, [4, 5, 6]).toProperty()
+        left.concat(right)
+      [1, error(), 2, 3, 4, 5, 6], unstable)
+
 describe "EventStream.startWith", ->
   describe "provides seed value, then the rest", ->
     expectStreamEvents(

@@ -497,6 +497,17 @@ class Observable
         .map(([myValues, otherValues]) -> otherValues.length == 0)
         .toProperty(false).skipDuplicates())
 
+  concat: (right) ->
+    left = this
+    new EventStream describe(left, "concat", right), (sink) ->
+      unsubRight = nop
+      unsubLeft = left.subscribeInternal (e) ->
+        if e.isEnd()
+          unsubRight = right.subscribeInternal sink
+        else
+          sink(e)
+      -> unsubLeft() ; unsubRight()
+
   name: (name) -> 
     @toString = -> name
     this
@@ -682,17 +693,6 @@ class EventStream extends Observable
   startWith: (seed) ->
     withDescription(this, "startWith", seed,
       Ponyfood.once(seed).concat(this))
-
-  concat: (right) ->
-    left = this
-    new EventStream describe(left, "concat", right), (sink) ->
-      unsubRight = nop
-      unsubLeft = left.subscribeInternal (e) ->
-        if e.isEnd()
-          unsubRight = right.subscribeInternal sink
-        else
-          sink(e)
-      -> unsubLeft() ; unsubRight()
 
   withHandler: (handler) ->
     dispatcher = new Dispatcher(@subscribeInternal, handler)
