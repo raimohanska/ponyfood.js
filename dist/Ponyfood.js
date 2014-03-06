@@ -11,7 +11,7 @@
     }
   };
 
-  Ponyfood.version = '0.7.8';
+  Ponyfood.version = '0.7.9';
 
   Ponyfood.fromBinder = function(binder, eventTransformer) {
     if (eventTransformer == null) {
@@ -992,6 +992,26 @@
       }).toProperty(false).skipDuplicates());
     };
 
+    Observable.prototype.concat = function(right) {
+      var left;
+      left = this;
+      return new EventStream(describe(left, "concat", right), function(sink) {
+        var unsubLeft, unsubRight;
+        unsubRight = nop;
+        unsubLeft = left.subscribeInternal(function(e) {
+          if (e.isEnd()) {
+            return unsubRight = right.subscribeInternal(sink);
+          } else {
+            return sink(e);
+          }
+        });
+        return function() {
+          unsubLeft();
+          return unsubRight();
+        };
+      });
+    };
+
     Observable.prototype.name = function(name) {
       this.toString = function() {
         return name;
@@ -1294,26 +1314,6 @@
 
     EventStream.prototype.startWith = function(seed) {
       return withDescription(this, "startWith", seed, Ponyfood.once(seed).concat(this));
-    };
-
-    EventStream.prototype.concat = function(right) {
-      var left;
-      left = this;
-      return new EventStream(describe(left, "concat", right), function(sink) {
-        var unsubLeft, unsubRight;
-        unsubRight = nop;
-        unsubLeft = left.subscribeInternal(function(e) {
-          if (e.isEnd()) {
-            return unsubRight = right.subscribeInternal(sink);
-          } else {
-            return sink(e);
-          }
-        });
-        return function() {
-          unsubLeft();
-          return unsubRight();
-        };
-      });
     };
 
     EventStream.prototype.withHandler = function(handler) {

@@ -1,6 +1,6 @@
 {
   "name": "ponyfood",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "main": "dist/Ponyfood.js",
   "repo": "raimohanska/ponyfood.js",
   "scripts": ["dist/Ponyfood.js"]

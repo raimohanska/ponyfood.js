@@ -1,7 +1,7 @@
 {
   "name": "ponyfoodjs",
   "description": "A small functional reactive programming lib for JavaScript.",
-  "version": "0.7.8",
+  "version": "0.7.9",
   "keywords": [
     "ponyfood.js", "ponyfood", "frp", "functional", "reactive", "programming",
     "stream", "streams", "EventStream", "Rx", "RxJs", "Observable"
