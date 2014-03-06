@@ -11,7 +11,7 @@
     }
   };
 
-  Ponyfood.version = '0.7.6';
+  Ponyfood.version = '0.7.7';
 
   Ponyfood.fromBinder = function(binder, eventTransformer) {
     if (eventTransformer == null) {
@@ -1102,8 +1102,13 @@
       }));
     };
 
-    EventStream.prototype.bufferWithTime = function(delay) {
-      return withDescription(this, "bufferWithTime", delay, this.bufferWithTimeOrCount(delay, Number.MAX_VALUE));
+    EventStream.prototype.bufferWithTime = function(delay, flushIfEmpty) {
+      var minLength, schedule;
+      minLength = flushIfEmpty ? 0 : 1;
+      schedule = function(buffer) {
+        return buffer.schedule();
+      };
+      return withDescription(this, "bufferWithTime", delay, this.buffer(delay, schedule, schedule, minLength));
     };
 
     EventStream.prototype.bufferWithCount = function(count) {
@@ -1122,13 +1127,16 @@
       return withDescription(this, "bufferWithTimeOrCount", delay, count, this.buffer(delay, flushOrSchedule, flushOrSchedule));
     };
 
-    EventStream.prototype.buffer = function(delay, onInput, onFlush) {
+    EventStream.prototype.buffer = function(delay, onInput, onFlush, minLength) {
       var buffer, delayMs, reply;
       if (onInput == null) {
         onInput = (function() {});
       }
       if (onFlush == null) {
         onFlush = (function() {});
+      }
+      if (minLength == null) {
+        minLength = 1;
       }
       buffer = {
         scheduled: false,
@@ -1137,7 +1145,7 @@
         flush: function() {
           var reply;
           this.scheduled = false;
-          if (this.values.length > 0) {
+          if (this.values.length >= minLength) {
             reply = this.push(next(this.values));
             this.values = [];
             if (this.end != null) {
