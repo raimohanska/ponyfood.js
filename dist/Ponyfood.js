@@ -11,7 +11,7 @@
     }
   };
 
-  Ponyfood.version = '<version>';
+  Ponyfood.version = '0.7.6';
 
   Ponyfood.fromBinder = function(binder, eventTransformer) {
     if (eventTransformer == null) {
