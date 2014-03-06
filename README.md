@@ -1,8 +1,6 @@
 Ponyfood.js
 ========
 
-<img src="https://raw.github.com/ponyfoodjs/ponyfood.js/master/logo.png" align="right" width="300px" />
-
 A small functional reactive programming lib for JavaScript.
 
 Turns your event spaghetti into clean and declarative feng shui ponyfood, by switching
@@ -33,8 +31,6 @@ You can also check out my entertaining (LOL), interactive, solid-ass [slideshow]
 And remember to give me feedback on the ponyfood! Let me know if you've
 used it. Tell me how it worked for you. What's missing? What's wrong?
 Please contribute!
-
-[![Build Status](https://travis-ci.org/ponyfoodjs/ponyfood.js.png?branch=master)](https://travis-ci.org/ponyfoodjs/ponyfood.js)
 
 Table of contents
 =================
